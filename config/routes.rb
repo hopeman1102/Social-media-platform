@@ -3,4 +3,6 @@ Rails.application.routes.draw do
 
   post "/new_user", to: "users#create"
 
+  post "/new_post", to: "posts#create"
+
 end
