@@ -5,4 +5,6 @@ Rails.application.routes.draw do
 
   post "/new_post", to: "posts#create"
 
+  post "/new_comment", to: "comments#create"
+
 end
