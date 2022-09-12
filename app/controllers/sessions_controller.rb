@@ -8,33 +8,33 @@ class SessionsController < ApplicationController
         post = Post.find new_comment[:post_id]
         post[:comment_count] = post.comments.length
         post.save!
-        render status: 200, html: "Comment saved successfully"
+        render status: 200, html: 'Comment saved successfully'
       else
-        render status: 400, html: "Not saved successfully"
+        render status: 400, html: 'Not saved successfully'
       end
     else
-      render status: 400, html: "user_id diffrent"
+      render status: 400, html: 'user_id diffrent'
     end
   end
 
-  def create_new_post 
+  def create_new_post
     new_post = Post.new(posts_params)
     if new_post[:user_id] == @user[:id]
       if new_post.save!
-        render status: 200, html: "post saved"
+        render status: 200, html: 'post saved'
       else
-        render status: 400, html: "post not saved"
+        render status: 400, html: 'post not saved'
       end
     else
-      render status: 400, html: "user id diffrent"
+      render status: 400, html: 'user id diffrent'
     end
   end
 
   def profile
     if @user
-      render json: {user_data: @user, user_posts: @user.posts}, status: 200
+      render json: { user_data: @user, user_posts: @user.posts }, status: 200
     else
-      render html: "No profile", status: 400
+      render html: 'No profile', status: 400
     end
   end
 
@@ -43,11 +43,11 @@ class SessionsController < ApplicationController
   end
 
   def sign_out
-    #redis      
+    # redis
     # eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxfQ.YFRJTQoe49iTNwHGpyX7e_qtJ1pA0FLiFZX-_8DBoIA
     # eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.uuuWPdPS7aUuiJDc56jjAW9_oAtn7QTUOB5UmoazihI
     @user = nil
-    render json: "Sign out complete", status: 200
+    render json: 'Sign out complete', status: 200
   end
 
   private
@@ -59,5 +59,4 @@ class SessionsController < ApplicationController
   def comments_params
     params.require(:comment_data).permit(:user_id, :post_id, :content)
   end
-
 end
