@@ -42,10 +42,7 @@ class SessionsController < ApplicationController
     render json: @user.posts, status: 200
   end
 
-  def sign_out
-    # redis
-    # eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxfQ.YFRJTQoe49iTNwHGpyX7e_qtJ1pA0FLiFZX-_8DBoIA
-    # eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyfQ.uuuWPdPS7aUuiJDc56jjAW9_oAtn7QTUOB5UmoazihI
+  def sign_out # REDIS
     @user = nil
     render json: 'Sign out complete', status: 200
   end
