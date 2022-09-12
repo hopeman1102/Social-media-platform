@@ -3,8 +3,20 @@ Rails.application.routes.draw do
 
   post "/new_user", to: "users#create"
 
-  post "/new_post", to: "posts#create"
+  post "/new_post", to: "sessions#create_new_post"
 
-  post "/new_comment", to: "comments#create"
+  post "/new_comment", to: "sessions#create_new_comment"
+
+  post "/log_in", to: "users#log_in"
+
+  get "/profile", to: "sessions#profile"
+
+  get "/my_posts", to: "sessions#myposts"
+
+  get "/sign_out", to: "sessions#sign_out"
+
+  get "/post/:id", to: "posts#show"
+
+  get "/user/:id", to: "users#show"
 
 end
