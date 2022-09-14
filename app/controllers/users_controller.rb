@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+before_action :authorize, only: [:index]
   def show
     render json: User.find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
@@ -7,10 +8,16 @@ class UsersController < ApplicationController
 
   def create
     user = User.new(user_params)
-    if user.save!
+    if user.save
       render status: 200, html: 'User saved'
     else
       render status: 400, html: 'User not saved'
+    end
+  end
+
+  def index
+    if @user
+      render json: { user_data: @user, user_posts: @user.posts }, status: 200
     end
   end
 
@@ -18,8 +25,6 @@ class UsersController < ApplicationController
     user = User.find_by(user_name: params[:user_name])
     if user.present? && user.authenticate(params[:password])
       jwt = encode_token({ "user_id": user.id, "expire": 24.hours.from_now })
-      # eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozfQ.zNubY6aofl2h7HaiXyKqiDwN2Ii_PgCnWa4pzJOv83I
-      # header.payload.signature
       render status: 200, json: { token: jwt,
                                   username: user.user_name }
     else
