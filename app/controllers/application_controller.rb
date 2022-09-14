@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
   def encode_token(token)
     JWT.encode(
-      token, 
+      token,
       Rails.application.secrets.secret_key_base
     )
   end
@@ -27,10 +27,7 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def authorize 
-    unless authorized_user
-      render json: {message: "You have to log in"}, status: :unauthorized
-    end
+  def authorize
+    render json: { message: 'You have to log in' }, status: :unauthorized unless authorized_user
   end
-
 end

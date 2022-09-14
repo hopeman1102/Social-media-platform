@@ -3,7 +3,7 @@ before_action :authorize, only: [:index]
   def show
     render json: User.find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
-    render html: "User not exists", status: 400
+    render html: 'User not exists', status: 400
   end
 
   def create
@@ -11,7 +11,7 @@ before_action :authorize, only: [:index]
     if user.save
       render status: 200, html: 'User saved'
     else
-      render status: 400, html:"User not saved"
+      render status: 400, html: 'User not saved'
     end
   end
 
@@ -28,7 +28,7 @@ before_action :authorize, only: [:index]
       render status: 200, json: { token: jwt,
                                   username: user.user_name }
     else
-      render status: 400, html: "Wrong pass or username"
+      render status: 400, html: 'Wrong pass or username'
     end
   end
 
@@ -37,5 +37,4 @@ before_action :authorize, only: [:index]
   def user_params
     params.require(:user_data).permit(:name, :user_name, :bio, :password, :password_confirmation)
   end
-
 end
