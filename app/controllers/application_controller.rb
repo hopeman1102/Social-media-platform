@@ -8,24 +8,22 @@ class ApplicationController < ActionController::API
 
   def decode_token
     auth_header = request.headers['Authorization']
-    if auth_header
-      #eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozfQ.zNubY6aofl2h7HaiXyKqiDwN2Ii_PgCnWa4pzJOv83I
-      #header.payload.signature [1] is for the payload
-      token = auth_header.split(" ")[1]
-      begin
-        JWT.decode token, Rails.application.secrets.secret_key_base, 'HS256'
-      rescue JWT::DecodeError
-        nil 
-      end
-    end
+    token = auth_header.split(' ')[1] if auth_header
+    JWT.decode token, Rails.application.secrets.secret_key_base, 'HS256'
+  rescue JWT::DecodeError
+    nil
   end
 
   def authorized_user
-    decoded_token = decode_token # {"uid": 1}
+    decoded_token = decode_token
     if decoded_token
-      user_id = decoded_token[0]["user_id"]
-      @user = User.find user_id
-      return true
+      user_id = decoded_token[0]['user_id']
+      if User.exists? user_id
+        @user = User.find user_id
+        true
+      else
+        render status: 400
+      end
     end
   end
 
