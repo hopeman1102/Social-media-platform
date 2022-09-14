@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Users API</title>
+    <title>Posts API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,11 +106,11 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Users API</h1>
+      <h1>Posts API</h1>
 
       <div class="article">
-        <h2>Show user with invalid id in the link</h2>
-        <h3>GET users/:id</h3>
+        <h2>Show post of a logged in user</h2>
+        <h3>GET posts</h3>
 
 
 
@@ -118,11 +118,12 @@ table th, table td {
 
             <h4>Headers</h4>
             <pre class="request headers">Version: HTTP/1.0
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyMH0.BJ1DJesAh3OnGOp9EzOrptHr5DXfJs2gXYLx-gFaqfc
 Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET users/1</pre>
+          <pre class="request route highlight">GET posts</pre>
 
 
 
@@ -135,13 +136,14 @@ X-Content-Type-Options: nosniff
 X-Download-Options: noopen
 X-Permitted-Cross-Domain-Policies: none
 Referrer-Policy: strict-origin-when-cross-origin
-Content-Type: text/html; charset=utf-8
-Cache-Control: no-cache
-X-Request-Id: fd1d05cd-3c99-46ca-9456-2b9ae2d52118
-X-Runtime: 0.002680
-Content-Length: 15</pre>
+Content-Type: application/json; charset=utf-8
+ETag: W/&quot;599b182fc442fbaec06258d351e091e5&quot;
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 8252ce3d-9202-4b77-be50-608a2ac4eba4
+X-Runtime: 0.015064
+Content-Length: 13042</pre>
             <h4>Status</h4>
-            <pre class="response status">400 Bad Request</pre>
+            <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">[binary data]</pre>
       </div>

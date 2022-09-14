@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Users API</title>
+    <title>Comments API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,11 +106,11 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Users API</h1>
+      <h1>Comments API</h1>
 
       <div class="article">
-        <h2>Show user with invalid id in the link</h2>
-        <h3>GET users/:id</h3>
+        <h2>Create a new comment with wrong token</h2>
+        <h3>POST comments</h3>
 
 
 
@@ -118,13 +118,17 @@ table th, table td {
 
             <h4>Headers</h4>
             <pre class="request headers">Version: HTTP/1.0
+Authorization: bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjowfQ.4a3dWM2msWKdFbeYQ5kxD74CeRSsa0R2K3U-YUPTznM
 Host: example.org
+Content-Type: application/x-www-form-urlencoded
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET users/1</pre>
+          <pre class="request route highlight">POST comments</pre>
 
 
+            <h4>Body</h4>
+            <pre class="request body">comment_data[post_id]&comment_data[content]=New+comment+created</pre>
 
 
             <h3>Response</h3>
@@ -135,11 +139,11 @@ X-Content-Type-Options: nosniff
 X-Download-Options: noopen
 X-Permitted-Cross-Domain-Policies: none
 Referrer-Policy: strict-origin-when-cross-origin
-Content-Type: text/html; charset=utf-8
+Content-Type: text/plain; charset=utf-8
 Cache-Control: no-cache
-X-Request-Id: fd1d05cd-3c99-46ca-9456-2b9ae2d52118
-X-Runtime: 0.002680
-Content-Length: 15</pre>
+X-Request-Id: bb97ea2f-1850-430e-9ff3-50a178771e43
+X-Runtime: 0.007419
+Content-Length: 1</pre>
             <h4>Status</h4>
             <pre class="response status">400 Bad Request</pre>
               <h4>Body</h4>
