@@ -3,7 +3,9 @@ class PostsController < ApplicationController
 
   def show
     post = Post.find(params[:id])
-    render json: { post: post, comments: post.comments }
+    render json: { post: post, comments: post.comments }, status: 200
+  rescue ActiveRecord::RecordNotFound
+    render html: 'User not exists', status: 400
   end
 
   def index
@@ -13,6 +15,7 @@ class PostsController < ApplicationController
 
   def create
     new_post = Post.new(posts_params)
+    new_post.content.strip!
     new_post[:user_id] = @user[:id]
     if new_post.save
       render status: 200, html: 'post saved'

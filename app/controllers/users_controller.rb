@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-before_action :authorize, only: [:index]
+before_action :authorize, only: [:index, :sign_out]
   def show
     render json: User.find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
@@ -8,11 +8,19 @@ before_action :authorize, only: [:index]
 
   def create
     user = User.new(user_params)
-    if user.save
+    user.name.strip!
+    user.user_name.strip!
+    user.password.strip!
+    user.password_confirmation.strip!
+    user.bio.strip!
+    byebug
+    if user.save!
       render status: 200, html: 'User saved'
     else
       render status: 400, html: 'User not saved'
     end
+  rescue ActiveRecord::RecordInvalid => e
+    render status: 422, json: {message: e}
   end
 
   def index
@@ -32,9 +40,17 @@ before_action :authorize, only: [:index]
     end
   end
 
+  def sign_out
+    @user = nil
+    render status: 200, json: {message: "Sign out success fully"}
+  end
+
   private
 
   def user_params
     params.require(:user_data).permit(:name, :user_name, :bio, :password, :password_confirmation)
   end
 end
+
+
+## SIGN OUT KA KARNA H
