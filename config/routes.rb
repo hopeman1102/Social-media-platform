@@ -3,11 +3,18 @@ Rails.application.routes.draw do
 
   resources :user1
 
-  resources :users, only: [:index, :create, :show]
+  resources :users, only: [:index, :create, :show] do
+    get :posts, on: :member
+  end
 
-  resources :posts, only: [:index, :create, :show]
+  resources :posts, only: [:index, :create, :show] do
+    get :comments, on: :member
+    get :likes, on: :member
+  end
 
   resources :comments, only: [:create]
+
+  resources :post_likes, only: [:create]
 
   post '/log_in', to: 'users#log_in'
 

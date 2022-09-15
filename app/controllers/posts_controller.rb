@@ -24,6 +24,25 @@ class PostsController < ApplicationController
     end
   end
 
+  def comments
+    comments = (Post.find params[:id]).comments
+    render status:200, json: comments
+  rescue Exception => e
+    render status: 404, json: {message: e}
+  end
+
+  def likes
+    likes_on_post = (Post.find params[:id]).post_likes.select("user_id")
+    users = User.where(id: likes_on_post).select(:user_name)
+    user_list = []
+    users.each do |ele|
+      user_list.append(ele[:user_name])
+    end
+    render status:200, json: user_list
+  rescue ActiveRecord::RecordNotFound => e
+    render status: 404, json: {message: e}
+  end
+
   private
 
   def posts_params

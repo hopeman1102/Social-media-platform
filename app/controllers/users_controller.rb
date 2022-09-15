@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-before_action :authorize, only: [:index, :sign_out]
+before_action :authorize, only: [:index, :sign_out, :posts]
   def show
     render json: User.find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
@@ -38,6 +38,13 @@ before_action :authorize, only: [:index, :sign_out]
     else
       render status: 400, html: 'Wrong pass or username'
     end
+  end
+
+  def posts
+    posts = (User.find params[:id]).posts
+    render status:200, json: posts
+  rescue Exception => e
+    render status: 404, json: {message: e}
   end
 
   def sign_out
