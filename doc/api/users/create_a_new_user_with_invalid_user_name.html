@@ -109,8 +109,8 @@ table th, table td {
       <h1>Users API</h1>
 
       <div class="article">
-        <h2>Invalid profile for user not logged in</h2>
-        <h3>GET users</h3>
+        <h2>Create a new user with invalid user name</h2>
+        <h3>POST users</h3>
 
 
 
@@ -118,14 +118,16 @@ table th, table td {
 
             <h4>Headers</h4>
             <pre class="request headers">Version: HTTP/1.0
-Authorization: 
 Host: example.org
+Content-Type: application/x-www-form-urlencoded
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET users</pre>
+          <pre class="request route highlight">POST users</pre>
 
 
+            <h4>Body</h4>
+            <pre class="request body">user_data[name]=test&user_data[user_name]=test+1&user_data[bio]=Hello+everyone%21%21+I%27m+test&user_data[password]=123456&user_data[password_confirmation]=123456</pre>
 
 
             <h3>Response</h3>
@@ -138,11 +140,11 @@ X-Permitted-Cross-Domain-Policies: none
 Referrer-Policy: strict-origin-when-cross-origin
 Content-Type: application/json; charset=utf-8
 Cache-Control: no-cache
-X-Request-Id: 2dbf3227-3a0f-49cf-b556-8f3a07e2dd33
-X-Runtime: 0.002610
-Content-Length: 32</pre>
+X-Request-Id: 78e879e9-aed1-45bc-a6f2-67d42c010d7b
+X-Runtime: 0.007612
+Content-Length: 53</pre>
             <h4>Status</h4>
-            <pre class="response status">401 Unauthorized</pre>
+            <pre class="response status">422 Unprocessable Entity</pre>
               <h4>Body</h4>
               <pre class="response body">[binary data]</pre>
       </div>

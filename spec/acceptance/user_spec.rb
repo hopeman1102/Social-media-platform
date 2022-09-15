@@ -16,13 +16,14 @@ resource 'Users' do
       end
     end
     context "400" do
-      let(:id) {1}
+      let(:id) {0}
       it "Show user with invalid id in the link" do
         do_request()
         expect(status).to eq(400)
       end
     end
   end
+
   get "my_posts", :type => :controller do
     before do
       User.create(user_name: "test1", password: "12345", password_confirmation: "12345")
@@ -46,6 +47,7 @@ resource 'Users' do
       end
     end
   end
+
   get "users", :type => :controller do
     before do
       User.create(user_name: "test1", password: "12345", password_confirmation: "12345")
@@ -96,15 +98,25 @@ resource 'Users' do
         params_obj = {user_data: {name: "test",user_name: "test",
           bio: "Hello everyone!! I'm test", password: "123",password_confirmation: "123456"}}
         do_request(params_obj)
-        expect(status).to eq(400)
+        expect(status).to eq(422)
       end
     end
-    context "400" do
+    context "422" do
       it "Create a new user with existing user name" do
         params_obj = {user_data: {name: "alreadyauser",user_name: "alreadyauser",
           bio: "Hello everyone!! I'm test", password: "123456", password_confirmation: "123456"}}
         do_request(params_obj)
-        expect(status).to eq(400)
+        expect(status).to eq(422)
+        response_body.should eq("{\"message\":\"Validation failed: User name has already been taken\"}")
+      end
+    end
+    context "422" do
+      it "Create a new user with invalid user name" do
+        params_obj = {user_data: {name: "test",user_name: "test 1",
+          bio: "Hello everyone!! I'm test", password: "123456",password_confirmation: "123456"}}
+        do_request(params_obj)
+        expect(status).to eq(422)
+        response_body.should eq("{\"message\":\"Validation failed: User name is invalid\"}")
       end
     end
   end
