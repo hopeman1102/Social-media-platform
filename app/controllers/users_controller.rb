@@ -8,11 +8,11 @@ before_action :authorize, only: [:index, :sign_out, :posts]
 
   def create
     user = User.new(user_params)
-    user.name.strip!
-    user.user_name.strip!
-    user.password.strip!
-    user.password_confirmation.strip!
-    user.bio.strip!
+    user.name.squish!
+    user.user_name.squish!
+    user.password.squish!
+    user.password_confirmation.squish!
+    user.bio.squish!
     if user.save!
       render status: 200, html: 'User saved'
     else
@@ -33,6 +33,7 @@ before_action :authorize, only: [:index, :sign_out, :posts]
 
   def log_in
     user = User.find_by(user_name: params[:user_name])
+    params[:password].squish!
     if user.present? && user.authenticate(params[:password])
       jwt = encode_token({ "user_id": user.id, "expire": 24.hours.from_now })
       response.add_header "token", jwt
