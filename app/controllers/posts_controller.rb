@@ -2,14 +2,22 @@ class PostsController < ApplicationController
   before_action :authorize, only: [:create, :index]
 
   def show
-    post = Post.find(params[:id])
-    render json: { post: post, comments: post.comments }, status: 200
+    post = Post.select(:id, 
+                       :content, 
+                       :image, 
+                       :like_count,
+                       :comment_count).find(params[:id])
+    render json: { post: post, comments: post.comments.select(:id, :content, :user_id ) }, status: 200
   rescue ActiveRecord::RecordNotFound
     render html: 'User not exists', status: 400
   end
 
   def index
-    posts = @user.posts
+    posts = @user.posts.select(:id, 
+                               :content, 
+                               :image, 
+                               :like_count,
+                               :comment_count)
     render status: 200, json: {users_posts: posts}
   end
 

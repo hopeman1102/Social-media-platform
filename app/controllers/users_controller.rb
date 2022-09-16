@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
 before_action :authorize, only: [:index, :sign_out, :posts]
   def show
-    render json: User.find(params[:id]), status: 200
+    render json: User.select(:user_name, :name, :bio, :id).find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
     render html: 'User not exists', status: 400
   end
@@ -13,7 +13,6 @@ before_action :authorize, only: [:index, :sign_out, :posts]
     user.password.strip!
     user.password_confirmation.strip!
     user.bio.strip!
-    byebug
     if user.save!
       render status: 200, html: 'User saved'
     else
@@ -25,7 +24,10 @@ before_action :authorize, only: [:index, :sign_out, :posts]
 
   def index
     if @user
-      render json: { user_data: @user, user_posts: @user.posts }, status: 200
+      render json: { 
+                user_data: @user, 
+                user_posts: @user.posts.select(:id, :content, :image, :like_count, :comment_count) }, 
+             status: 200
     end
   end
 
@@ -33,23 +35,31 @@ before_action :authorize, only: [:index, :sign_out, :posts]
     user = User.find_by(user_name: params[:user_name])
     if user.present? && user.authenticate(params[:password])
       jwt = encode_token({ "user_id": user.id, "expire": 24.hours.from_now })
-      render status: 200, json: { token: jwt,
-                                  username: user.user_name }
+      response.add_header "token", jwt
+      render status: 200, json: { username: user.user_name }
     else
       render status: 400, html: 'Wrong pass or username'
     end
   end
 
   def posts
-    posts = (User.find params[:id]).posts
+    posts = (User.select(:user_name, 
+                         :name, 
+                         :bio, 
+                         :id).find params[:id]).posts.select(:id,
+                                                             :content, 
+                                                             :image, 
+                                                             :like_count,
+                                                             :comment_count)
     render status:200, json: posts
   rescue Exception => e
     render status: 404, json: {message: e}
   end
 
   def sign_out
+    name = @user.user_name
     @user = nil
-    render status: 200, json: {message: "Sign out success fully"}
+    render status: 200, json: {message: "#{name} sign out success fully", username: name}
   end
 
   private
