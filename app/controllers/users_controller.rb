@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-before_action :authorize, only: [:index, :sign_out, :posts]
+before_action :authorize, only: [:index, :sign_out, :posts, :update]
   def show
     render json: User.select(:user_name, :name, :bio, :id).find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
@@ -61,6 +61,20 @@ before_action :authorize, only: [:index, :sign_out, :posts]
     name = @user.user_name
     @user = nil
     render status: 200, json: {message: "#{name} sign out success fully", username: name}
+  end
+
+  def update
+    if @user.id == params[:id].to_i
+      user = User.find @user.id
+      user.user_name = params[:user_name] if params[:user_name]
+      user.name = params[:name] if params[:name]
+      user.bio = params[:bio] if params[:bio]
+      if user.save
+        render status: 200, json: {message: "Changes saved"}
+      end
+    else
+      render status: 400, json: {message: "You are not changing your details. (User id no match)"}
+    end
   end
 
   private
