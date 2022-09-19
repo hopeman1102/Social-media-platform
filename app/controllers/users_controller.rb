@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-before_action :authorize, only: [:index, :sign_out, :posts, :update]
+before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy]
   def show
     render json: User.select(:user_name, :name, :bio, :id).find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
@@ -9,9 +9,10 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update]
   def create
     user = User.new(user_params)
     user.name.squish!
+    user.user_name.downcase!
     user.user_name.squish!
-    user.password.squish!
-    user.password_confirmation.squish!
+    user.password.strip!
+    user.password_confirmation.strip!
     user.bio.squish!
     if user.save!
       render status: 200, html: 'User saved'
@@ -44,15 +45,14 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update]
   end
 
   def posts
-    posts = (User.select(:user_name, 
-                         :name, 
-                         :bio, 
-                         :id).find params[:id]).posts.select(:id,
-                                                             :content, 
-                                                             :image, 
-                                                             :like_count,
-                                                             :comment_count)
-    render status:200, json: posts
+    post_author = User.select(:user_name,
+                              :id).find params[:id]
+    posts = post_author.posts.select(:id,
+                                    :content,
+                                    :image,
+                                    :like_count,
+                                    :comment_count)
+    render status:200, json: {user_name: post_author[:user_name], post: posts}
   rescue Exception => e
     render status: 404, json: {message: e}
   end
@@ -61,6 +61,13 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update]
     name = @user.user_name
     @user = nil
     render status: 200, json: {message: "#{name} sign out success fully", username: name}
+  end
+
+  def destroy
+    if @user.id == params[:id]
+      user = User.find @user.id
+      user.post_likes
+    end
   end
 
   def update
