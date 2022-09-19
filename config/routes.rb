@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
   resources :user1
 
-  resources :users, only: [:index, :create, :show] do
+  resources :users, only: [:index, :create, :show, :update] do
     get :posts, on: :member
   end
 

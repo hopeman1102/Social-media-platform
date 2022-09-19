@@ -33,7 +33,7 @@ class PostsController < ApplicationController
   end
 
   def comments
-    comments = (Post.find params[:id]).comments
+    comments = (Post.find params[:id]).comments.select(:user_id, :content)
     render status:200, json: comments
   rescue Exception => e
     render status: 404, json: {message: e}
