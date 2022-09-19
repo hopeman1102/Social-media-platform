@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :authorize, only: [:create, :index]
+  before_action :authorize, only: [:create, :index, :destroy]
 
   def show
     post = Post.select(:id, 
@@ -49,6 +49,18 @@ class PostsController < ApplicationController
     render status:200, json: user_list
   rescue ActiveRecord::RecordNotFound => e
     render status: 404, json: {message: e}
+  end
+
+  def destroy
+    post = Post.find params[:id]
+    if post[:user_id] == @user.id
+      post.comments.destroy_all
+      post.post_likes.delete_all
+      post.destroy
+      render status: 400, json: {message: "Deleted successfully"}
+    else
+      render status: 400, json: {message: "You are not the author of the post"}
+    end
   end
 
   private
