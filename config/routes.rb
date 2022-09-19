@@ -3,11 +3,11 @@ Rails.application.routes.draw do
 
   resources :user1
 
-  resources :users, only: [:index, :create, :show, :update] do
+  resources :users, only: [:index, :create, :show, :update, :destroy] do
     get :posts, on: :member
   end
 
-  resources :posts, only: [:index, :create, :show] do
+  resources :posts, only: [:index, :create, :show, :destroy] do
     get :comments, on: :member
     get :likes, on: :member
   end
