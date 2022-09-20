@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy]
+  before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy, :update_password]
   def show
     render json: User.select(:user_name, :name, :bio, :id).find(params[:id]), status: 200
   rescue ActiveRecord::RecordNotFound
@@ -34,7 +34,7 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy]
 
   def log_in
     user = User.find_by(user_name: params[:user_name])
-    params[:password].squish!
+    params[:password].strip!
     if user.present? && user.authenticate(params[:password])
       jwt = encode_token({ "user_id": user.id, "expire": 24.hours.from_now })
       response.add_header "token", jwt
@@ -64,7 +64,6 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy]
   end
 
   def destroy
-    # byebug
     if @user.id == params[:id].to_i
       user = User.find @user.id
       user.posts.destroy_all
@@ -90,11 +89,34 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy]
     end
   end
 
+  def update_password
+    password_data = update_password_params
+    if password_data[:confirmation_for_password_change]
+      user = User.find_by(user_name: @user.user_name)
+      if user.authenticate(password_data[:current_password])
+        user.password = password_data[:new_password]
+        user.password_confirmation = password_data[:new_password_confirmation]
+        if user.save!
+          render status: 200, json: {message: "Password has been updated"}
+        end
+      else
+        render status: 400, json: {message: "Wrong current password, or not accessing your own password"}
+      end
+    else
+      render status: 400, json: {message: "Please give the confirmation for the password change"}
+    end
+  end
+
   private
 
   def user_params
     params.require(:user_data).permit(:name, :user_name, :bio, :password, :password_confirmation)
   end
+
+  def update_password_params
+    params.require(:password_data).permit(:current_password, :new_password, :new_password_confirmation, :confirmation_for_password_change)
+  end
+
 end
 
 
