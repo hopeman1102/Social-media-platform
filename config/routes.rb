@@ -20,4 +20,6 @@ Rails.application.routes.draw do
 
   get '/sign_out', to: 'users#sign_out'
 
+  patch '/update_password', to: 'users#update_password'
+
 end
