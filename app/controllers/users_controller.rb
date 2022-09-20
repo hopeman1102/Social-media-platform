@@ -64,9 +64,15 @@ before_action :authorize, only: [:index, :sign_out, :posts, :update, :destroy]
   end
 
   def destroy
-    if @user.id == params[:id]
+    # byebug
+    if @user.id == params[:id].to_i
       user = User.find @user.id
-      user.post_likes
+      user.posts.destroy_all
+      username = user[:user_name]
+      user.destroy
+      render status: 400, json: {message: "User deleted successfully", username: username}
+    else
+      render status: 400, json: {message: "You are not the user"}
     end
   end
 
