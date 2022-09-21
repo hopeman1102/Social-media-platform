@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/redis/redis-rb
+  revision: fdf61e578ae8438e466961cfda91aa9727f914b5
+  specs:
+    redis (5.0.4)
+      redis-client (>= 0.7.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -56,12 +63,15 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
       zeitwerk (~> 2.2, >= 2.2.2)
+    addressable (2.8.1)
+      public_suffix (>= 2.0.2, < 6.0)
     bcrypt (3.1.18)
     bootsnap (1.13.0)
       msgpack (~> 1.2)
     builder (3.2.4)
     byebug (11.1.3)
     concurrent-ruby (1.1.10)
+    connection_pool (2.3.0)
     crass (1.0.6)
     diff-lcs (1.5.0)
     erubi (1.11.0)
@@ -71,6 +81,10 @@ GEM
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     jwt (2.5.0)
+    launchy (2.5.0)
+      addressable (~> 2.7)
+    letter_opener (1.8.1)
+      launchy (>= 2.2, < 3)
     listen (3.7.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -89,6 +103,7 @@ GEM
     nokogiri (1.13.8-x86_64-linux)
       racc (~> 1.4)
     pg (1.4.3)
+    public_suffix (5.0.0)
     puma (4.3.12)
       nio4r (~> 2.0)
     racc (1.6.0)
@@ -125,6 +140,8 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
+    redis-client (0.8.1)
+      connection_pool
     rspec (3.11.0)
       rspec-core (~> 3.11.0)
       rspec-expectations (~> 3.11.0)
@@ -178,10 +195,12 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   jwt
+  letter_opener
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   puma (~> 4.1)
   rails (~> 6.0.3)
+  redis!
   rspec-rails
   rspec_api_documentation
   spring
