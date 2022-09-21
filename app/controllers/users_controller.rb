@@ -6,18 +6,60 @@ class UsersController < ApplicationController
     render html: 'User not exists', status: 400
   end
 
-  def create
-    user = User.new(user_params)
-    user.name.squish!
-    user.user_name.downcase!
-    user.user_name.squish!
-    user.password.strip!
-    user.password_confirmation.strip!
-    user.bio.squish!
-    if user.save!
-      render status: 200, html: 'User saved'
+  def send_otp 
+    details = otp_params
+    details[:user_name].squish!
+    details[:email].squish!
+    if !User.find_by(email: details[:email]) and !User.find_by(user_name: details[:user_name])
+      redis = Redis.new
+      otp = rand(10000...99999)
+      details[:otp] = otp
+      redis.setex(details[:user_name], 600, otp)
+      ForgotPasswordMailer.forgot_password(details).deliver 
     else
-      render status: 400, html: 'User not saved'
+      render json: {message: "Email/User_name already exists"}
+    end
+  end
+
+  def otp_verification
+    redis = Redis.new
+    details = otp_params
+    if redis.get(details[:user_name]).to_i == details[:otp]
+      details[:user_name].squish!
+      details[:email].squish!
+      details[:password].strip!
+      details[:password_confirmation].strip!
+      user = User.new(user_name: details[:user_name],
+                      email: details[:email],
+                      password: details[:password], 
+                      password_confirmation: details[:password_confirmation])
+      if user.save!
+        render status: 200, json: {message: "User Saved"}
+      else
+        render status: 400, hjson: {message: "User not saved"}
+      end
+    else
+      render status: 400, json: {message: "OPT not correct"}
+    end
+  rescue ActiveRecord::RecordInvalid => e
+    render status: 422, json: {message: e}
+  end
+
+  def create
+    redis = Redis.new
+    details = otp_params
+    if redis.get(details[:user_name]).to_i == details[:otp]
+      user = User.new(user_name: details[:user_name],
+                      email: details[:email],
+                      password: details[:password], 
+                      password_confirmation: details[:password_confirmation])
+      if user.save!
+        render status: 200, json: {message: "User Saved"}
+      else
+        render status: 400, hjson: {message: "User not saved"}
+      end
+    else
+      render status: 400, json: {message: "OPT not correct"}
     end
   rescue ActiveRecord::RecordInvalid => e
     render status: 422, json: {message: e}
@@ -81,6 +123,7 @@ class UsersController < ApplicationController
       user.user_name = params[:user_name] if params[:user_name]
       user.name = params[:name] if params[:name]
       user.bio = params[:bio] if params[:bio]
+      user.email = params[:email] if params[:email]
       if user.save
         render status: 200, json: {message: "Changes saved"}
       end
@@ -109,12 +152,19 @@ class UsersController < ApplicationController
 
   private
 
+  def otp_params
+    params.require(:user_data).permit(:user_name, :email, :otp, :password, :password_confirmation)
+  end
+
   def user_params
-    params.require(:user_data).permit(:name, :user_name, :bio, :password, :password_confirmation)
+    params.require(:user_data).permit(:name, :user_name, :email, :bio, :password, :password_confirmation)
   end
 
   def update_password_params
-    params.require(:password_data).permit(:current_password, :new_password, :new_password_confirmation, :confirmation_for_password_change)
+    params.require(:password_data).permit(:current_password,
+                                          :new_password, 
+                                          :new_password_confirmation, 
+                                          :confirmation_for_password_change)
   end
 
 end
