@@ -19,7 +19,7 @@ class ApplicationController < ActionController::API
     if decoded_token
       user_id = decoded_token[0]['user_id']
       if User.exists? user_id
-        @user = User.select(:user_name, :name, :bio, :id).find  user_id
+        @user = User.select(:user_name, :name, :bio, :email, :id).find  user_id
         true
       else
         render status: 400
