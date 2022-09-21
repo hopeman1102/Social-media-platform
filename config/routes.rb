@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 
-  resources :user1
+  # root 'post_likes#index'
+
+  # resources :user1
 
   resources :users, only: [:index, :create, :show, :update, :destroy] do
     get :posts, on: :member
@@ -21,5 +23,7 @@ Rails.application.routes.draw do
   get '/sign_out', to: 'users#sign_out'
 
   patch '/update_password', to: 'users#update_password'
+
+  post '/new_user', to: 'users#send_otp'
 
 end
