@@ -7,17 +7,24 @@ class PostsController < ApplicationController
                        :image, 
                        :like_count,
                        :comment_count).find(params[:id])
-    render json: { post: post, comments: post.comments.select(:id, :content, :user_id ) }, status: 200
+    render json: { post: post, 
+                   comments: post.comments
+                                 .order(created_at: :desc)
+                                 .select(:id, :content, :user_id) }, 
+           status: 200
+    # order by
   rescue ActiveRecord::RecordNotFound
     render html: 'User not exists', status: 400
   end
 
   def index
-    posts = @user.posts.select(:id, 
-                               :content, 
-                               :image, 
-                               :like_count,
-                               :comment_count)
+    posts = @user.posts
+                 .order(created_at: :desc)
+                 .select(:id, 
+                         :content, 
+                         :image, 
+                         :like_count,
+                         :comment_count)
     render status: 200, json: {users_posts: posts}
   end
 
@@ -33,7 +40,9 @@ class PostsController < ApplicationController
   end
 
   def comments
-    comments = (Post.find params[:id]).comments.select(:user_id, :content)
+    comments = (Post.find params[:id]).comments
+                                      .order(created_at: :desc)
+                                      .select(:user_id, :content)
     render status:200, json: comments
   rescue Exception => e
     render status: 404, json: {message: e}

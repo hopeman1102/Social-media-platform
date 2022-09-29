@@ -69,7 +69,13 @@ class UsersController < ApplicationController
     if @user
       render json: { 
                 user_data: @user, 
-                user_posts: @user.posts.select(:id, :content, :image, :like_count, :comment_count) }, 
+                user_posts: @user.posts
+                                 .order(created_at: :desc)
+                                 .select(:id, 
+                                         :content, 
+                                         :image, 
+                                         :like_count, 
+                                         :comment_count)}, 
              status: 200
     end
   end
@@ -89,11 +95,13 @@ class UsersController < ApplicationController
   def posts
     post_author = User.select(:user_name,
                               :id).find params[:id]
-    posts = post_author.posts.select(:id,
-                                    :content,
-                                    :image,
-                                    :like_count,
-                                    :comment_count)
+    posts = post_author.posts
+                       .order(created_at: :desc)
+                       .select(:id,
+                               :content,
+                               :image,
+                               :like_count,
+                               :comment_count)
     render status:200, json: {user_name: post_author[:user_name], post: posts}
   rescue Exception => e
     render status: 404, json: {message: e}
