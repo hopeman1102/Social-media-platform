@@ -17,8 +17,10 @@ gem 'puma', '~> 4.1'
 # Use Active Model has_secure_password
 gem 'bcrypt', '~> 3.1.7'
 
+# Use of JWT for encryption of tokens
 gem 'jwt'
 
+# Use of rspec API Doc for creation of document
 gem 'rspec_api_documentation'
 gem 'rspec-rails'
 
